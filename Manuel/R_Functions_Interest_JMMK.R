@@ -15,7 +15,7 @@
 #'@importFrom WGCNA plotDendroAndColors
 #'@importFrom flashClust flashClust
 #'@importFrom gplots col2hex
-sample_dendrogram<-function(expression,colors, method="ward",title="Sample dendrogram",labels=c("Condition")){
+sample_dendrogram<-function(expression,colors, method="ward",title="Sample dendrogram",labels=c("Condition"), ...){
   colors<-as.matrix(colors)
   if(ncol(colors)>1){
     traitColors<- apply(colors,MARGIN = 2,FUN = col2hex)
@@ -144,7 +144,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
       labs(size=legend_SizeDots,color=legend_significance) +
       th + guides(colour = guide_legend(order = 1, override.aes = list(size = legendIconSize)), 
                   shape = guide_legend(order = 2, override.aes = list(size = legendIconSize))) + 
-      geom_point(aes(color = factor(names(colCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_averageExp]}else{1}}), shape = factor(names(shapeCustom))), alpha = colAlpha, 
+      geom_point(aes(color = factor(names(colCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_SizeDots]}else{1}}), shape = factor(names(shapeCustom))), alpha = colAlpha, 
                  na.rm = TRUE) + scale_color_manual(values = colCustom) + 
       #geom_point(aes(color = factor(names(colCustom)), shape = factor(names(shapeCustom))), alpha = colAlpha, 
       #           size = transcriptPointSize, na.rm = TRUE) + scale_color_manual(values = colCustom) + 
@@ -155,7 +155,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
       labs(size=legend_SizeDots,color=legend_significance) +
       th + guides(colour = guide_legend(order = 1, override.aes = list(size = legendIconSize)), 
                   shape = guide_legend(order = 2, override.aes = list(size = legendIconSize))) + 
-      geom_point(aes(color = factor(names(colCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_averageExp]}else{1}})), alpha = colAlpha, shape = shape, size = transcriptPointSize, 
+      geom_point(aes(color = factor(names(colCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_SizeDots]}else{1}})), alpha = colAlpha, shape = shape, size = transcriptPointSize, 
                  na.rm = TRUE) +
       #geom_point(aes(color = factor(names(colCustom))), alpha = colAlpha, shape = shape, size = transcriptPointSize, 
       #           na.rm = TRUE) + 
@@ -166,7 +166,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
       labs(size=legend_SizeDots,color=legend_significance) +
       th + guides(colour = guide_legend(order = 1, override.aes = list(size = legendIconSize)), 
                   shape = guide_legend(order = 2, override.aes = list(size = legendIconSize))) + 
-      geom_point(aes(color = factor(names(colCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_averageExp]}else{1}}), shape = factor(Sig)), alpha = colAlpha, na.rm = TRUE) + 
+      geom_point(aes(color = factor(names(colCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_SizeDots]}else{1}}), shape = factor(Sig)), alpha = colAlpha, na.rm = TRUE) + 
       #geom_point(aes(color = factor(names(colCustom)), shape = factor(Sig)), alpha = colAlpha, size = transcriptPointSize, na.rm = TRUE) + 
       scale_color_manual(values = colCustom) + 
       scale_shape_manual(values = c(NS = shape[1], FC = shape[2], P = shape[3], FC_P = shape[4]), 
@@ -178,7 +178,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
       labs(size=legend_SizeDots,color=legend_significance) +
       th + guides(colour = guide_legend(order = 1, override.aes = list(size = legendIconSize)), 
                   shape = guide_legend(order = 2, override.aes = list(size = legendIconSize))) + 
-      geom_point(aes(color = factor(Sig), shape = factor(names(shapeCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_averageExp]}else{1}})), alpha = colAlpha, na.rm = TRUE) + 
+      geom_point(aes(color = factor(Sig), shape = factor(names(shapeCustom)),size=sapply(SizeDots,function(x){if(x){toptable[,col_SizeDots]}else{1}})), alpha = colAlpha, na.rm = TRUE) + 
       #geom_point(aes(color = factor(Sig), shape = factor(names(shapeCustom))), alpha = colAlpha, size = transcriptPointSize, na.rm = TRUE) + 
       scale_color_manual(values = c(NS = col[1],
                                     FC = col[2], P = col[3], 
@@ -192,7 +192,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
     plot <- ggplot(toptable, aes(x = xvals, y = -log10(yvals))) + 
       labs(size=legend_SizeDots,color=legend_significance) +
       th + guides(colour = guide_legend(order = 1, override.aes = list(shape = shape, size = legendIconSize))) + 
-      geom_point(aes(color = factor(Sig),size=sapply(SizeDots,function(x){if(x){toptable[,col_averageExp]}else{1}})), alpha = colAlpha, shape = shape, na.rm = TRUE, show.legend = legendVisible) + 
+      geom_point(aes(color = factor(Sig),size=sapply(SizeDots,function(x){if(x){toptable[,col_SizeDots]}else{1}})), alpha = colAlpha, shape = shape, na.rm = TRUE, show.legend = legendVisible) + 
       #geom_point(aes(color = factor(Sig)), alpha = colAlpha, shape = shape, size = transcriptPointSize, na.rm = TRUE, show.legend = legendVisible) + 
       scale_color_manual(values = c(NS = col[1], FC = col[2], P = col[3], FC_P = col[4]), labels = c(NS = legend[1],FC = paste(legend[2], sep = ""), P = paste(legend[3], sep = ""), FC_P = paste(legend[4], sep = "")))
   }
@@ -200,10 +200,10 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
     plot <- ggplot(toptable, aes(x = xvals, y = -log10(yvals))) + 
       labs(size=legend_SizeDots,color=legend_significance) +
       th + guides(colour = guide_legend(order = 1, override.aes = list(shape = c(NS = shape[1], FC = shape[2], P = shape[3], FC_P = shape[4]), size = legendIconSize))) + 
-      geom_point(aes(color = factor(Sig), shape = factor(Sig),size=sapply(SizeDots,function(x){if(x){toptable[,col_averageExp]}else{1}})), 
+      geom_point(aes(color = factor(Sig), shape = factor(Sig),size=sapply(SizeDots,function(x){if(x){toptable[,col_SizeDots]}else{1}})), 
                  alpha = colAlpha, size = transcriptPointSize, 
                  na.rm = TRUE, show.legend = legendVisible) +
-      geom_point(aes(color = factor(Sig), shape = factor(Sig),size=sapply(SizeDots,function(x){if(x){toptable[,col_averageExp]}else{1}})), 
+      geom_point(aes(color = factor(Sig), shape = factor(Sig),size=sapply(SizeDots,function(x){if(x){toptable[,col_SizeDots]}else{1}})), 
                  alpha = colAlpha, 
                  na.rm = TRUE, show.legend = legendVisible) + 
       #geom_point(aes(color = factor(Sig), shape = factor(Sig)), 
@@ -233,7 +233,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
                                         point.padding = unit(0.1, "lines"), 
                                         segment.size = 0.5,
                                         segment.alpha=0.4,
-                                        colour='red')
+                                        colour='red',max.overlaps = 20)
   }
   
   if(keepLab2){
@@ -244,7 +244,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
                                         segment.size = 0.5,
                                         segment.alpha=0.5,
                                         colour='grey',
-                                        alpha=0.7)
+                                        alpha=0.7,max.overlaps = 20)
   }
   
   
@@ -307,14 +307,14 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
 #'@param LegendName_Shape Legend name for shape, default is 'shape'
 #'@param ggrepelLab logical. If TRUE labels for every sample in the PCA plot are displayed
 #'@param size_gglab Size for the ggrepel labels that show sample names
-plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,samplenames,title="",LegendName_Color="group",LegendName_Shape="shape",LegendName="group",ggrepelLab=TRUE,size_gglab=5){
+plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,samplenames,title="",LegendName_Color="group",LegendName_Shape="shape",LegendName="group",ggrepelLab=TRUE,size_gglab=5,size_title=14){
   df_pca<-prcomp(t(expression))
   df_out <- as.data.frame(df_pca$x)
   df_out$group<-group
   df_out$sample_name<-samplenames
   
   percentage <- round(df_pca$sdev^2 / sum(df_pca$sdev^2)*100,2)
-  percentage <- paste( colnames(df_out), "(", paste( as.character(percentage), "%", ")", sep="") )
+  percentage <- paste0(colnames(df_out)[grep("^PC",colnames(df_out))], "(", paste0(as.character(percentage), "%", ")") )
   print(percentage)
   
   if(is.null(shape)){
@@ -328,7 +328,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,samplenames,title="
   
   p<-p+geom_point(size=4)+ xlab(percentage[1]) + ylab(percentage[2])+
     #geom_text(label=row.names(df_out_raw),show.legend = FALSE,hjust=0,vjust=0.2)
-    theme(plot.title = element_text(size = 14, face = "bold",hjust = 0.5),
+    theme(plot.title = element_text(size = size_title, face = "bold",hjust = 0.5),
           legend.title=element_text(size=14), legend.text=element_text(size=12,),
           axis.title.x = element_text(size = 14),axis.title.y = element_text(size = 14),
           panel.background = element_blank(),
