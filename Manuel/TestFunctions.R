@@ -39,5 +39,20 @@ dev.off()
 
 
 DomvsCtrl<-read.csv("./Data/DomperidonevsCtrlAllGenes.csv",row.names = 1)
+EnhancedVolcanoExample<-EnhancedVolcano2(toptable = DomvsCtrl,
+                 lab = DomvsCtrl$SYMBOL,
+                 x=4,y = 8,
+                 keepLab1 = TRUE, keepLab2 = TRUE,
+                 pCutoff = 0.05,
+                 FCcutoff = 2,
+                 title= 'NEN vs Domperidone',
+                 subtitle="",
+                 xlab = bquote(~Log[2]~ "fold change"),
+                 ylab = bquote(~-Log[10]~italic(P)~adj),
+                 legendIconSize=2,
+                 features='genes',SizeDots = T,col_SizeDots = 5
+                 )
 
+ggsave(file=paste0("./Figures/VolcanoPlot_example.svg"), plot=EnhancedVolcanoExample, width=12, height=10)
+ggsave(file=paste0("./Figures/VolcanoPlot_example.pdf"), plot=EnhancedVolcanoExample, width=12, height=10)
 
