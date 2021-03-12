@@ -4,19 +4,21 @@ git clone username@idocdr1:/storage/cdr/Shared/BioFig.git BioFig.git
 #check URLs of remote
 git remote -v
 
-#Create new files or modify them, then:
-git add .
+1.Before working on the folder
+git fetch
+git merge
 
-#Commit your changes
+2.Do your work
+git add .
+Commit your changes
+
 git commit -a
 or
-git commit -a -m "This is the summary of what you did"
+->git commit -a -m "This is the summary of what you did"
 
-#Push your changes to the repository in the server
+3.Push your changes to the repository in the server
 git push origin master
 
-#Pull changes safe way not merging
-git fetch
 
 #Pull changes from remote and merge
 git pull 
