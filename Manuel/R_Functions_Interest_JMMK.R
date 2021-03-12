@@ -308,7 +308,7 @@ EnhancedVolcano2<-function (toptable, lab, x="logFC", y="adj.P.val", selectLab =
 #'@param ggrepelLab logical. If TRUE labels for every sample in the PCA plot are displayed
 #'@param size_gglab Size for the ggrepel labels that show sample names
 plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,samplenames,title="",LegendName_Color="group",LegendName_Shape="shape",LegendName="group",ggrepelLab=TRUE,size_gglab=5,size_title=14){
-  df_pca<-prcomp(t(expression))
+  df_pca<-prcomp(t(expression),scale=TRUE)
   df_out <- as.data.frame(df_pca$x)
   df_out$group<-group
   df_out$sample_name<-samplenames
