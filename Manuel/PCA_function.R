@@ -32,6 +32,23 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,samplenames,title="
         labs(shape=LegendName_Shape, col=LegendName_Color)+
         ggtitle(title)
     }
+  } else if(typeof(expression)=="S4"){
+    pcaData <- plotPCA(vst(expression, fitType = "local"),
+                       intgroup = intgroup,
+                       returnData = TRUE
+    )
+    percentVar <- round(100 * attr(pcaData, "percentVar"))
+    ggplot(pcaData, 
+           aes(PC1, PC2, color = group)) +
+      geom_point(size = point.size) +
+      geom_label(aes(label = colnames(dds))) +
+      xlab(paste0("PC1: ", percentVar[1], "% variance")) + 
+      ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+      guides(color = guide_legend(ncol = col.legend)) +
+      ggtitle(title)
+  
+    
   }
+  
   return(p)
 }
