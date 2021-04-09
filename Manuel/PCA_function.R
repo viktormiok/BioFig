@@ -4,7 +4,17 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      ggrepelLab=TRUE,size_gglab=5,size_title=14,
                      point.size=4,scl=T,ntop=NULL,transform=NULL,MahalanobisEllips=F){
   
-  #Add option to use only the top n genes that explain most of the variance
+  #Include check data type if not stop
+  #(Viktorian)
+  
+  #If the class of the object is dds
+  if(class(expression)=="DESeqDataSet"){
+    group<-colData(expression)[,group]
+    samplenames<-colData(expression)[,samplenames]
+    expression<-assay(expression)
+  }
+  #EdgeR option
+  #(Amare)
   
   
   #Add option transform data (could be packed in another function)
@@ -13,12 +23,10 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     scl<-F
   }
   
-  #If the class of the object is dds
-  if(class(expression)=="DESeqDataSet"){
-    group<-colData(expression)[,group]
-    samplenames<-colData(expression)[,samplenames]
-    expression<-assay(expression)
-  }
+  #Add option to use only the top n genes that explain most of the variance
+  #(Manuel)
+  
+  
   
   df_pca<-prcomp(t(expression),scale=scl)
   df_out <- as.data.frame(df_pca$x)
