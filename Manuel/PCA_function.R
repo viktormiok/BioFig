@@ -2,13 +2,13 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      samplenames,title="",LegendName_Color="group",
                      LegendName_Shape="shape",LegendName="group",
                      ggrepelLab=TRUE,size_gglab=5,size_title=14,
-                     point.size=4,scl=T,ntop=NULL,transform=NULL){
+                     point.size=4,scl=T,ntop=NULL,transform=NULL,MahalanobisEllips=F){
   
   #Add option to use only the top n genes that explain most of the variance
   
   
   #Add option transform data (could be packed in another function)
-  if(transform=="vst"){
+  if(!is.null(transform) && transform=="vst"){
     expression<-vst(expression,fitType = "local")
     scl<-F
   }
@@ -55,5 +55,8 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
       ggtitle(title)
   }
   
+  if(MahalanobisEllips){
+    p<-p+stat_ellipse()
+  }
   return(p)
 }
