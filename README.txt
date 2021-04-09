@@ -4,6 +4,13 @@ git clone username@idocdr1:/storage/cdr/Shared/BioFig.git BioFig.git
 #check URLs of remote
 git remote -v
 
+#Check what changed in the last commits
+git whatchanged origin/master -n 1
+
+git fetch origin
+git diff origin/master
+git merge origin/master
+
 1.Before working on the folder
 git fetch
 git merge
@@ -18,6 +25,9 @@ or
 
 3.Push your changes to the repository in the server
 git push origin master
+
+
+
 
 
 #Pull changes from remote and merge
