@@ -1,8 +1,9 @@
 plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
-                     samplenames,title="",LegendName_Color="group",
+                     samplenames,title="PCA",LegendName_Color="group",
                      LegendName_Shape="shape",LegendName="group",
                      ggrepelLab=TRUE,size_gglab=5,size_title=14,
-                     point.size=4,scl=T,ntop=NULL,transform=NULL,MahalanobisEllips=F){
+                     point.size=4,scl=T,ntop=NULL,
+                     transform=c(NULL,"vst","rlog"),MahalanobisEllips=F){
   
   #Include check data type if not stop
   #(Viktorian)
@@ -18,14 +19,19 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
   
   
   #Add option transform data (could be packed in another function)
-  if(!is.null(transform) && transform=="vst"){
-    expression<-vst(expression,fitType = "local")
+  transform<-match.arg(transform)
+  if(!is.null(transform)){
+    eval_r<-switch(transform, "vst" = vst(expression),"rlog" = rlog(expression))
+    expression<-eval_r
     scl<-F
   }
   
   #Add option to use only the top n genes that explain most of the variance
-  #(Manuel)
-  
+  if(!is.null(ntop)){
+    rv <- rowVars(expression)
+    select <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
+    expression<-expression[select,]
+  }
   
   
   df_pca<-prcomp(t(expression),scale=scl)
