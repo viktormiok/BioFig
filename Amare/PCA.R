@@ -1,3 +1,5 @@
+# The BioFig package contains a collection of R functions used by biologists with some programming knowledge. 
+# The package is applicable to visualize the high dimension data to understand biological questions.
 
 plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      samplenames,title="",LegendName_Color="group",
@@ -26,10 +28,11 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
   if(class(expression)=="DGEList"){
     edgR_list_object<- edgeR::plotMDS.DGEList(expression)
     
-    ## Then extract MDS matrix from edgR_list_object and save it as ed_list
+    ## Then extract MDS matrix from edgR_list_object 
+    ## Save the extracted MDS matrix as ed_list
     ed_list = as.data.frame(edgR_list_object$cmdscale.out) %>% dplyr::rename(DM1 = V1, DM2 = V2)
     
-    ## then pass the the data frame to ggplot2 to plot it 
+    ## Then pass the the data to ggplot2 to get the plot 
     pplot <- ggplot2::ggplot(ed_list, ggplot2::aes(x=DM1,y=DM2))+
       ggplot2::geom_point(size=3) + 
       ggplot2::theme(axis.title=element_text(size = 12,face="bold", colour = "black"),
@@ -46,10 +49,19 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
       ggplot2::guides(colour=guide_legend(title="Group")) +
       ggplot2::scale_fill_manual(values =  c("darkorange","darkmagenta"))+
       ggplot2::labs(x = "Leading LogFC dim 1",
-                    y = "Leading LogFC dim 2", title = "") +
+                    y = "Leading LogFC dim 2", title = "MDS plot") +
       ggrepel::geom_text_repel(data = ed_list,aes(label = rownames(ed_list)))
     return(pplot)
+    
+    ## if same one want to plot PCA from edgeR object
+    ## Then, extract the grouping information and the count data as follows 
+     } else {
+     group <- expression$samples$group %>% as.data.frame()   
+     names(group) = "group"
+     expression = expression$counts
   }
+  
+  ## Then, it follows the code below for normalization and visualization.
   
   df_pca<-prcomp(t(expression),scale=scl)
   df_out <- as.data.frame(df_pca$x)
@@ -102,4 +114,10 @@ expression <- edgeR::DGEList(counts = expression, group = t(Sampledata))
 
 debug(plot_2DPCA)
 plot_2DPCA(expression)
+
+
+
+
+
+
 
