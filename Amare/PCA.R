@@ -30,8 +30,8 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     ed_list = as.data.frame(edgR_list_object$cmdscale.out) %>% dplyr::rename(DM1 = V1, DM2 = V2)
     
     ## then pass the the data frame to ggplot2 to plot it 
-    pplot <- ggplot2::ggplot(ed_list, aes(x=DM1,y=DM2))+
-      geom_point(size=3) + 
+    pplot <- ggplot2::ggplot(ed_list, ggplot2::aes(x=DM1,y=DM2))+
+      ggplot2::geom_point(size=3) + 
       ggplot2::theme(axis.title=element_text(size = 12,face="bold", colour = "black"),
                      axis.text = element_text(size = 12),
                      axis.ticks = element_line(colour='black'),
@@ -95,9 +95,11 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
 ## Test Functions
 ## PC plot 
 library(dplyr)
+library(ggplot2)
 expression <- read.csv("cts.csv", row.names = 1)
 Sampledata <- read.csv("Sample.csv", row.names = 1) %>% dplyr::select(-2)
 expression <- edgeR::DGEList(counts = expression, group = t(Sampledata))
 
 debug(plot_2DPCA)
 plot_2DPCA(expression)
+
