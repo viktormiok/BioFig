@@ -8,14 +8,17 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
   #Include check data type if not stop
   #(Viktorian)
   
-  #If the class of the object is dds
+  #Deseq2 option
   if(class(expression)=="DESeqDataSet"){
     group<-colData(expression)[,group]
     samplenames<-colData(expression)[,samplenames]
     expression<-assay(expression)
   }
   #EdgeR option
-  #(Amare)
+  if(class(expression)=="DGEList" && attr(attributes(expression)[[1]],"package")=="edgeR"){
+    expression<-edgeR::getCounts(expression)
+    samplenames<-colnames(expression)
+  }
   
   
   #Add option transform data (could be packed in another function)
