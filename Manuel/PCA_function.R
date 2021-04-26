@@ -3,7 +3,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      LegendName_Shape="shape",LegendName="group",
                      ggrepelLab=TRUE,size_gglab=5,size_title=14,
                      point.size=4,scl=T,ntop=NULL,
-                     transform=c(NULL,"vst","rlog"),MahalanobisEllips=F){
+                     transform=c("no","vst","rlog"),scale=F,MahalanobisEllips=F){
   
   #Include check data type if not stop
   #(Viktorian)
@@ -19,11 +19,14 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
   
   
   #Add option transform data (could be packed in another function)
-  transform<-match.arg(transform)
-  if(!is.null(transform)){
+  transform<-match.arg(transform) #MAybe change it later to a simple if(is.na())
+  if(!transform=="no"){
     eval_r<-switch(transform, "vst" = vst(expression),"rlog" = rlog(expression))
     expression<-eval_r
     scl<-F
+    if(scale){scl<-T}
+  }else{
+    if(scale){scl<-T}
   }
   
   #Add option to use only the top n genes that explain most of the variance
