@@ -5,9 +5,74 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      point.size=4,scl=T,ntop=NULL,
                      transform=c("no","vst","rlog"),scale=F,MahalanobisEllips=F){
   
-  #Include check data type if not stop
-  #(Viktorian)
-  
+  if (!is(group, "character")) {
+    stop("Input (group) is of wrong class.")
+  }
+  if (!is(colors, "character")) {
+    stop("Input (colors) is of wrong class.")
+  }
+  if (!is(shape, "character")) {
+    stop("Input (shape) is of wrong class.")
+  }
+  if (!is(samplenames, "character")) {
+    stop("Input (samplenames) is of wrong class.")
+  }
+  if (!is(title, "character")) {
+    stop("Input (title) is of wrong class.")
+  }
+  if (!is(LegendName_Color, "character")) {
+    stop("Input (LegendName_Color) is of wrong class.")
+  }
+  if (!is(LegendName_Shape, "character")) {
+    stop("Input (LegendName_Shape) is of wrong class.")
+  }
+  if (!is(LegendName, "character")) {
+    stop("Input (LegendName) is of wrong class.")
+  }
+  if (!is(ggrepelLab, "logical")) {
+    stop("Input (ggrepelLab) is of wrong class.")
+  }
+  if (!is(size_gglab, "numeric")) {
+    stop("Input (size_gglab) is of wrong class.")
+  }
+  if (is.na(size_gglab)) {
+    stop("Input (size_gglab) is not a positive integer.")
+  }
+  if (size_gglab < 0) {
+    stop("Input (size_gglab) is not a positive integer.")
+  }
+  if (!is(size_title, "numeric")) {
+    stop("Input (size_title) is of wrong class.")
+  }
+  if (is.na(size_title)) {
+    stop("Input (size_title) is not a positive integer.")
+  }
+  if (size_title < 0) {
+    stop("Input (size_title) is not a positive integer.")
+  }
+  if (!is(point.size, "numeric")) {
+    stop("Input (point.size) is of wrong class.")
+  }
+  if (is.na(point.size)) {
+    stop("Input (point.size) is not a positive integer.")
+  }
+  if (point.size < 0) {
+    stop("Input (point.size) is not a positive integer.")
+  }
+  if (!is(scl, "logical")) {
+    stop("Input (scl) is of wrong class.")
+  } 
+  if (!is(transform, "character")) {
+    if (!(transform %in% c("no","vst","rlog"))) {
+      stop("Input (transform) ill-specified.")
+    }
+  }
+  if (!is(scale, "logical")) {
+    stop("Input (scale) is of wrong class.")
+  } 
+  if (!is(MahalanobisEllips, "logical")) {
+    stop("Input (MahalanobisEllips) is of wrong class.")
+  } 
   #Deseq2 option
   if(class(expression)=="DESeqDataSet"){
     group<-colData(expression)[,group]
