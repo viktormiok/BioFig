@@ -2,77 +2,70 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      samplenames,title="PCA",LegendName_Color="group",
                      LegendName_Shape="shape",LegendName="group",
                      ggrepelLab=TRUE,size_gglab=5,size_title=14,
-                     point.size=4,scl=T,ntop=NULL,
+                     point.size=4,ntop=NULL,
                      transform=c("no","vst","rlog"),scale=F,MahalanobisEllips=F){
   
-  if (!is(group, "character")) {
-    stop("Input (group) is of wrong class.")
+  #Functions used
+  matchLs<-function(L1,L2){
+    Idx<-match(L1,L2)
+    IdxOut<-Idx[!is.na(Idx)]
+    IdxOut
   }
-  if (!is(colors, "character")) {
-    stop("Input (colors) is of wrong class.")
-  }
-  if (!is(shape, "character")) {
-    stop("Input (shape) is of wrong class.")
-  }
-  if (!is(samplenames, "character")) {
-    stop("Input (samplenames) is of wrong class.")
-  }
-  if (!is(title, "character")) {
-    stop("Input (title) is of wrong class.")
-  }
-  if (!is(LegendName_Color, "character")) {
-    stop("Input (LegendName_Color) is of wrong class.")
-  }
-  if (!is(LegendName_Shape, "character")) {
-    stop("Input (LegendName_Shape) is of wrong class.")
-  }
-  if (!is(LegendName, "character")) {
-    stop("Input (LegendName) is of wrong class.")
-  }
-  if (!is(ggrepelLab, "logical")) {
-    stop("Input (ggrepelLab) is of wrong class.")
-  }
-  if (!is(size_gglab, "numeric")) {
-    stop("Input (size_gglab) is of wrong class.")
-  }
-  if (is.na(size_gglab)) {
-    stop("Input (size_gglab) is not a positive integer.")
-  }
-  if (size_gglab < 0) {
-    stop("Input (size_gglab) is not a positive integer.")
-  }
-  if (!is(size_title, "numeric")) {
-    stop("Input (size_title) is of wrong class.")
-  }
-  if (is.na(size_title)) {
-    stop("Input (size_title) is not a positive integer.")
-  }
-  if (size_title < 0) {
-    stop("Input (size_title) is not a positive integer.")
-  }
-  if (!is(point.size, "numeric")) {
-    stop("Input (point.size) is of wrong class.")
-  }
-  if (is.na(point.size)) {
-    stop("Input (point.size) is not a positive integer.")
-  }
-  if (point.size < 0) {
-    stop("Input (point.size) is not a positive integer.")
-  }
-  if (!is(scl, "logical")) {
-    stop("Input (scl) is of wrong class.")
-  } 
-  if (!is(transform, "character")) {
-    if (!(transform %in% c("no","vst","rlog"))) {
-      stop("Input (transform) ill-specified.")
+  '%ni%' <- Negate('%in%')
+  scl<-T
+  
+  #Obtain parameters given by the user
+  ParaList<-as.list(match.call())
+  #Check parameters that should be characters
+  ParamChNames<-  c("group","colors","samplenames","title","LegendName_Color","LegendName_Shape","LegendName","transform")
+  ChParaList<-ParaList[matchLs(ParamChNames,names(ParaList))]   #Obtain the parameter values given by the user
+  ChNameList <-ParamChNames[matchLs(names(ParaList),ParamChNames)] #and names 
+  for(i in 1:length(ChParaList)){#Loop parameters to make sure they are of class character
+    param<-eval(ChParaList[[i]])
+    if(is.null(param) && ChNameList[i] == "colors"){
+      next
+    }else if(is.null(param)){
+      stop(paste0("Input ",ChNameList[i]," cannot be null"))
+    }
+    if(ChNameList[i]=="group" && is.factor(param)){
+      param<-as.character(param)
+    }
+    if (!is(param, "character")) {
+      stop(paste0("Input ",ChNameList[i]," is of a wrong class. Character is expected and ",class(param)," was given"))
+    }
+    if(ChNameList[i]=="transform" && param %ni% c("no","vst","rlog")){
+      stop(paste0("Input ",ChNameList[i]," is not part of the transformations. Only '",paste(c("no","vst","rlog"),collapse=", "),"' are possible parameters"))
     }
   }
-  if (!is(scale, "logical")) {
-    stop("Input (scale) is of wrong class.")
-  } 
-  if (!is(MahalanobisEllips, "logical")) {
-    stop("Input (MahalanobisEllips) is of wrong class.")
-  } 
+  #Check parameters that should be nummeric
+  ParamNumNames<-  c("shape","size_gglab","size_title","point.size","ntop")
+  NumParaList<-ParaList[matchLs(ParamNumNames,names(ParaList))]
+  NumNameList <-ParamNumNames[matchLs(names(ParaList),ParamNumNames)]
+  for(i in 1:length(NumParaList)){#Loop parameters to make sure they are of class numeric
+    param<-eval(NumParaList[[i]])
+    if(is.null(param) && NumNameList[i] %in% c("shape","ntop")){
+      next
+    }else if(is.null(param)){
+      stop(paste0("Input ",NumNameList[i]," cannot be null"))
+    }
+    
+    if (!is(param, "numeric")) {
+      stop(paste0("Input ",NumNameList[i]," is of a wrong class. Numeric is expected and ",class(param)," was given"))
+    }
+    if(param<0){
+      stop(paste0("Input ",NumNameList[i]," is not a positive integer"))
+    }
+  }
+  #Check parameters that should be logical
+  ParamLogNames<-  c("scale","MahalanobisEllips")
+  LogParaList<-ParaList[matchLs(ParamLogNames,names(ParaList))]
+  LogNameList <-ParamLogNames[matchLs(names(ParaList),ParamLogNames)]
+  for(i in 1:length(LogParaList)){#Loop parameters to make sure they are of class numeric
+    param<-eval(LogParaList[[i]])
+    if (!is(param, "logical")) {
+      stop(paste0("Input ",LogNameList[i]," is of a wrong class. Logical is expected and ",class(param)," was given"))
+    }
+  }
   #Deseq2 option
   if(class(expression)=="DESeqDataSet"){
     group<-colData(expression)[,group]
