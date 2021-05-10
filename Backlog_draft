@@ -4,21 +4,21 @@ What is the product?
 The BioFig package contains a collection of R functions used by biologists with some programming knowledge.
 
 What does the product do?
-The package is applicable to visualize high dimension data to understand biological questions.
+The package is applicable to visualize high dimension data to understand biological questions. It should help the user to identify problematic samples.
 
 
 Phases
 The team defined two phases.
 
 The first phase consists in the creation of an R package.
-We will start the package with three functions: PCA, dendrogram and Heatmap.
+We will start the package with three functions: PCA, Sample Heatmap, MDS and Features Heatmap  (dendrogram included in the Heatmap) 
 
 The first phase might be extended to include volcano plot and enrichment plot depending on the progress.
 
 Current deadlines:
 -	In a 3 Weeks period the PCA function will be finalized and deployed
--	In a 2 Weeks period the development of the dendrogram function will start
--	April 26, 2021 a possible date for a Hackathon will be discussed and decided
+-	In a 2 Weeks period the development of the heatmap function will start
+-	May 18th possible date for a Hackathon
 
 The second phase consists in the creation of an R shinny application
 The resulting functions of the first phase will be adapted to develop the application
