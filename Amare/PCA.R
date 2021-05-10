@@ -1,14 +1,14 @@
 # The BioFig package contains a collection of R functions used by biologists with some programming knowledge. 
 # The package is applicable to visualize the high dimension data to understand biological questions.
-
-plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
+plot_2DPCA<-function(expression = c("matrix", "data.frame", "DGEList", "DESeqDataSet"),
+                     group,colors=NULL,shape=NULL,
                      samplenames,title="",LegendName_Color="group",
                      LegendName_Shape="shape",LegendName="group",
                      ggrepelLab=TRUE,size_gglab=5,size_title=14,
                      point.size=4,scl=T,ntop=NULL,transform=NULL,MahalanobisEllips=F){
   
   #Add option to use only the top n genes that explain most of the variance
-  
+
   
   #Add option transform data (could be packed in another function)
   if(!is.null(transform) && transform=="vst"){
@@ -55,11 +55,12 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     
     ## if same one want to plot PCA from edgeR object
     ## Then, extract the grouping information and the count data as follows 
-     } else {
+     } 
+  else {
      group <- expression$samples$group %>% as.data.frame()   
      names(group) = "group"
      expression = expression$counts
-  }
+        } 
   
   ## Then, it follows the code below for normalization and visualization.
   

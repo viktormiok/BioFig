@@ -3,7 +3,9 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      LegendName_Shape="shape",LegendName="group",
                      ggrepelLab=TRUE,size_gglab=5,size_title=14,
                      point.size=4,scl=T,ntop=NULL,
-                     transform=c("no","vst","rlog"),scale=F,MahalanobisEllips=F){
+                     transform=c("no","vst","rlog"),
+                     scale=F,MahalanobisEllips=F,
+                     plottype = c("PCA", "mds", "heatmap")){
   
   if (!is(group, "character")) {
     stop("Input (group) is of wrong class.")
@@ -73,14 +75,21 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
   if (!is(MahalanobisEllips, "logical")) {
     stop("Input (MahalanobisEllips) is of wrong class.")
   } 
+  
+  if (!is(plottype, "character")) {
+    stop("Input (plottype) is of wrong class.")
+  }
+  
   #Deseq2 option
   if(class(expression)=="DESeqDataSet"){
     group<-colData(expression)[,group]
     samplenames<-colData(expression)[,samplenames]
     expression<-assay(expression)
   }
+  
   #EdgeR option
   if(class(expression)=="DGEList" && attr(attributes(expression)[[1]],"package")=="edgeR"){
+    #group <- expression[[2]][1]
     expression<-edgeR::getCounts(expression)
     samplenames<-colnames(expression)
   }
@@ -104,44 +113,82 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     expression<-expression[select,]
   }
   
-  
-  df_pca<-prcomp(t(expression),scale=scl)
-  df_out <- as.data.frame(df_pca$x)
-  df_out$group<-group
-  df_out$sample_name<-samplenames
-  
-  percentage <- round(df_pca$sdev^2 / sum(df_pca$sdev^2)*100,2)
-  percentage <- paste0(colnames(df_out)[grep("^PC",colnames(df_out))], " (", paste0(as.character(percentage), "% variance", ")") )
-  print(percentage)
-  
-  if(is.null(shape)){
-    p<-ggplot(df_out,aes(x=PC1,y=PC2,color=group))
-    if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName)}
-  }else{
-    p<-ggplot(df_out,aes(x=PC1,y=PC2,color=group,shape=shape))
-    if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName)}
+  if(plottype == "PCA"){
+    df_pca<-prcomp(t(expression),scale=scl)
+    df_out <- as.data.frame(df_pca$x)
+    df_out$group<-group
+    df_out$sample_name<-samplenames
+    
+    percentage <- round(df_pca$sdev^2 / sum(df_pca$sdev^2)*100,2)
+    percentage <- paste0(colnames(df_out)[grep("^PC",colnames(df_out))], " (", paste0(as.character(percentage), "% variance", ")") )
+    print(percentage)
+    
+    if(is.null(shape)){
+      p<-ggplot(df_out,aes(x=PC1,y=PC2,color=group))
+      if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName)}
+    }else{
+      p<-ggplot(df_out,aes(x=PC1,y=PC2,color=group,shape=shape))
+      if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName)}
+    }
+    
+    
+    p<-p+geom_point(size=point.size)+ xlab(percentage[1]) + ylab(percentage[2])+
+      #geom_text(label=row.names(df_out_raw),show.legend = FALSE,hjust=0,vjust=0.2)
+      theme(plot.title = element_text(size = size_title, face = "bold",hjust = 0.5),
+            legend.title=element_text(size=14), legend.text=element_text(size=12,),
+            axis.title.x = element_text(size = 14),axis.title.y = element_text(size = 14),
+            panel.background = element_blank(),
+            panel.grid.major =  element_line(colour = "grey90", size = 0.2),
+            panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
+            panel.border = element_rect(color='black',fill=NA))
+    if(ggrepelLab){
+      p<-p + geom_text_repel(aes(label=sample_name),show.legend = FALSE,
+                             size=size_gglab,
+                             force = 2,max.overlaps = Inf) +
+        labs(shape=LegendName_Shape, col=LegendName_Color)+
+        ggtitle(title)
+    }
+    
+    if(MahalanobisEllips){
+      p<-p+stat_ellipse()
+    }
+    return(p)
+    
   }
   
-  
-  p<-p+geom_point(size=point.size)+ xlab(percentage[1]) + ylab(percentage[2])+
-    #geom_text(label=row.names(df_out_raw),show.legend = FALSE,hjust=0,vjust=0.2)
-    theme(plot.title = element_text(size = size_title, face = "bold",hjust = 0.5),
-          legend.title=element_text(size=14), legend.text=element_text(size=12,),
-          axis.title.x = element_text(size = 14),axis.title.y = element_text(size = 14),
-          panel.background = element_blank(),
-          panel.grid.major =  element_line(colour = "grey90", size = 0.2),
-          panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
-          panel.border = element_rect(color='black',fill=NA))
-  if(ggrepelLab){
-    p<-p + geom_text_repel(aes(label=sample_name),show.legend = FALSE,
-                           size=size_gglab,
-                           force = 2,max.overlaps = Inf) +
-      labs(shape=LegendName_Shape, col=LegendName_Color)+
-      ggtitle(title)
+  if(plottype == "mds"){
+    
+    ## calculate distance for the sample
+    data <- expression %>%
+      t() %>%
+      dist() %>%
+      as.matrix()
+    
+    ## convert distance matrix to Classical multidimensional scaling(MDS)
+    mdsData <- data.frame(cmdscale(data))
+    mds <- cbind(mdsData, as.data.frame(data)) # combine with distance with mds
+    
+    ## plot in ggplot2
+    plotmds <- ggplot(mds, aes(X1, X2)) +
+      geom_point(size = 3) +
+      theme_minimal() +
+      theme(axis.title=element_text(size = 12,face="bold", colour = "black"),
+            axis.text = element_text(size = 12),
+            axis.ticks = element_line(colour='black'),
+            plot.title = element_text(hjust = 0.5,size=12,face="bold"),
+            legend.position = "bottom",
+            legend.title = element_text(color = "Black", size = 12, face = "bold"),
+            legend.text=element_text(color = "Black", size = 12, face = "bold"),
+            panel.background = element_blank(),
+            panel.grid.major =  element_line(colour = "grey90", size = 0.2),
+            panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
+            panel.border = element_rect(color='black',fill=NA)) +
+      labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
+      ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)))
   }
-  
-  if(MahalanobisEllips){
-    p<-p+stat_ellipse()
-  }
-  return(p)
+  return(plotmds)
 }
+
+plot_2DPCA(expression= expression, plottype = "mds")
+
+
