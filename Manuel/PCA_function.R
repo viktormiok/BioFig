@@ -1,16 +1,7 @@
 plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      samplenames,title="PCA",LegendName_Color="group",
                      LegendName_Shape="shape",LegendName="group",
-                     ggrepelLab=TRUE,size_gglab=5,size_title=14,
-<<<<<<< HEAD
-                     point.size=4,scl=T,ntop=NULL,
-                     transform=c("no","vst","rlog"),
-                     scale=F,MahalanobisEllips=F,
-                     plottype = c("PCA", "mds", "heatmap")){
-=======
-                     point.size=4,ntop=NULL,
-                     transform=c("no","vst","rlog"),scale=F,MahalanobisEllips=F){
->>>>>>> 7f36c1acf7577e41d4b2fa3d084d19d3aa0fe8bd
+                     ggrepelLab=TRUE,size_gglab=5,size_title=1){
   
   #Functions used
   matchLs<-function(L1,L2){
@@ -73,7 +64,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
       stop(paste0("Input ",LogNameList[i]," is of a wrong class. Logical is expected and ",class(param)," was given"))
     }
   }
-<<<<<<< HEAD
+  
   if (!is(scale, "logical")) {
     stop("Input (scale) is of wrong class.")
   } 
@@ -85,8 +76,6 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     stop("Input (plottype) is of wrong class.")
   }
   
-=======
->>>>>>> 7f36c1acf7577e41d4b2fa3d084d19d3aa0fe8bd
   #Deseq2 option
   if(class(expression)=="DESeqDataSet"){
     group<-colData(expression)[,group]
@@ -163,8 +152,8 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     
   }
   
-  if(plottype == "mds"){
-    
+
+  ## MDS
     ## calculate distance for the sample
     data <- expression %>%
       t() %>%
@@ -192,10 +181,8 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
             panel.border = element_rect(color='black',fill=NA)) +
       labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
       ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)))
-  }
-  return(plotmds)
+ 
 }
 
-plot_2DPCA(expression= expression, plottype = "mds")
 
 
