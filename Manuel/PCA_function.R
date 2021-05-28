@@ -1,7 +1,12 @@
+expression <- read.csv("Data_expression_normalized.csv", row.names = 1)
+head(expression) 
+
 plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      samplenames,title="PCA",LegendName_Color="group",
                      LegendName_Shape="shape",LegendName="group",
-                     ggrepelLab=TRUE,size_gglab=5,size_title=1){
+                     ggrepelLab=TRUE,size_gglab=5,size_title=1,
+                     point.size=4,scl=T,ntop=NULL,transform=NULL,
+                     MahalanobisEllips=F, plotype = c("PCA", "MDS", "sample/geneDistance")){
   
   #Functions used
   matchLs<-function(L1,L2){
@@ -14,8 +19,9 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
   
   #Obtain parameters given by the user
   ParaList<-as.list(match.call())
+  
   #Check parameters that should be characters
-  ParamChNames<-  c("group","colors","samplenames","title","LegendName_Color","LegendName_Shape","LegendName","transform")
+  ParamChNames<-  c("group","colors","samplenames","title","LegendName_Color","LegendName_Shape","LegendName","transform", "plotype")
   ChParaList<-ParaList[matchLs(ParamChNames,names(ParaList))]   #Obtain the parameter values given by the user
   ChNameList <-ParamChNames[matchLs(names(ParaList),ParamChNames)] #and names 
   for(i in 1:length(ChParaList)){#Loop parameters to make sure they are of class character
@@ -35,6 +41,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
       stop(paste0("Input ",ChNameList[i]," is not part of the transformations. Only '",paste(c("no","vst","rlog"),collapse=", "),"' are possible parameters"))
     }
   }
+  
   #Check parameters that should be nummeric
   ParamNumNames<-  c("shape","size_gglab","size_title","point.size","ntop")
   NumParaList<-ParaList[matchLs(ParamNumNames,names(ParaList))]
@@ -54,6 +61,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
       stop(paste0("Input ",NumNameList[i]," is not a positive integer"))
     }
   }
+  
   #Check parameters that should be logical
   ParamLogNames<-  c("scale","MahalanobisEllips")
   LogParaList<-ParaList[matchLs(ParamLogNames,names(ParaList))]
@@ -109,7 +117,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     expression<-expression[select,]
   }
   
-  if(plottype == "PCA"){
+  if(plotype == "PCA"){
     df_pca<-prcomp(t(expression),scale=scl)
     df_out <- as.data.frame(df_pca$x)
     df_out$group<-group
@@ -152,8 +160,9 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     
   }
   
-
   ## MDS
+  if(plotype == "MDS"){
+    
     ## calculate distance for the sample
     data <- expression %>%
       t() %>%
@@ -181,8 +190,31 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
             panel.border = element_rect(color='black',fill=NA)) +
       labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
       ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)))
- 
+    return(plotmds)
+    
+  }
+  
+  ## Sample Heatmap
+  if(plotype == "sample/geneDistance"){
+    ## calculate distance(Dissimilarity Measure )
+    sampleDis <- pheatmap::pheatmap(expression %>%
+                                      t() %>%
+                                      dist() %>%
+                                    as.matrix(),
+                                    col = rev(RColorBrewer::brewer.pal(n = 8, name = "RdBu")),
+                                    main = "Sample dissmilarity",
+                                    fontsize = 14)
+    
+    
+    ## calculate sample correlation(Similarity Measure )
+    sampleCor <- pheatmap::pheatmap(expression %>%
+                                    cor() %>%
+                                    as.matrix(),
+                                    col = rev(RColorBrewer::brewer.pal(n = 8, name = "RdBu")),
+                                    main = "Sample similarity",
+                                    fontsize = 14)
+    
+    return(cowplot::plot_grid(sampleDis, sampleCor, labels = "AUTO"))
+  }
 }
-
-
 
