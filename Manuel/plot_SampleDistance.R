@@ -6,7 +6,9 @@ plot_SampleDistance<-function(expression,...){
                                     as.matrix(),
                                   col = rev(RColorBrewer::brewer.pal(n = 8, name = "RdBu")),
                                   main = "Sample dissmilarity",
-                                  fontsize = 14)
+                                  fontsize = 9.23,
+                                  fontsize_col = 12,
+                                  fontsize_row = 12)
   
   
   ## calculate sample correlation(Similarity Measure )
@@ -15,7 +17,9 @@ plot_SampleDistance<-function(expression,...){
                                     as.matrix(),
                                   col = rev(RColorBrewer::brewer.pal(n = 8, name = "RdBu")),
                                   main = "Sample similarity",
-                                  fontsize = 14)
+                                  fontsize = 9.23,
+                                  fontsize_col = 12,
+                                  fontsize_row = 12)
   listplots<-list()
   listplots[[1]]<-sampleDis
   listplots[[2]]<-sampleCor

@@ -1,5 +1,5 @@
 plot_2DPCA<-function(expression, scl,colors=NULL,shape=NULL,
-                     group,samplenames,title="PCA",
+                     group,samplenames,
                      ggrepelLab=TRUE,size_gglab=5,
                      size_title=1,point.size=4,
                      MahalanobisEllips=F,
@@ -22,21 +22,16 @@ plot_2DPCA<-function(expression, scl,colors=NULL,shape=NULL,
   }
   
   
-  p<-p+geom_point(size=point.size)+ xlab(percentage[1]) + ylab(percentage[2])+
-    #geom_text(label=row.names(df_out_raw),show.legend = FALSE,hjust=0,vjust=0.2)
-    theme(plot.title = element_text(size = size_title, face = "bold",hjust = 0.5),
-          legend.title=element_text(size=14), legend.text=element_text(size=12,),
-          axis.title.x = element_text(size = 14),axis.title.y = element_text(size = 14),
-          panel.background = element_blank(),
-          panel.grid.major =  element_line(colour = "grey90", size = 0.2),
-          panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
-          panel.border = element_rect(color='black',fill=NA))
+  p<-p+geom_point(size=point.size) + 
+    xlab(percentage[1]) + 
+    ylab(percentage[2]) +
+    ggtitle(label = "PCA plot") +
+    labs(shape=LegendName_Shape, col=LegendName_Color)+
+    ggTheme(1)
   if(ggrepelLab){
     p<-p + geom_text_repel(aes(label=sample_name),show.legend = FALSE,
                            size=size_gglab,
-                           force = 2,max.overlaps = Inf) +
-      labs(shape=LegendName_Shape, col=LegendName_Color)+
-      ggtitle(title)
+                           force = 2,max.overlaps = Inf)
   }
   
   if(MahalanobisEllips){
@@ -46,3 +41,5 @@ plot_2DPCA<-function(expression, scl,colors=NULL,shape=NULL,
   
 
 }
+
+      

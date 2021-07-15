@@ -5,7 +5,6 @@ plot_ExploratoryPlots<-function(expression,group,colors=NULL,shape=NULL,
                                 point.size=4,scale=T,ntop=NULL,transform="no",
                                 MahalanobisEllips=F, plottype = c("all","PCA", "MDS", "Distance","Expression"),...){
   
-  
   #Internal Functions
   matchLs<-function(L1,L2){
     Idx<-match(L1,L2)
@@ -71,15 +70,12 @@ plot_ExploratoryPlots<-function(expression,group,colors=NULL,shape=NULL,
     }
   }
   
-  #Deseq2 option
-  if(class(expression)=="DESeqDataSet"){
+  
+  if(class(expression)=="DESeqDataSet"){ #Deseq2 option
     group<-colData(expression)[,group]
     samplenames<-colData(expression)[,samplenames]
     expression<-assay(expression)
-  }
-  
-  #EdgeR option
-  if(class(expression)=="DGEList" && attr(attributes(expression)[[1]],"package")=="edgeR"){
+  }else if(class(expression)=="DGEList" && attr(attributes(expression)[[1]],"package")=="edgeR"){  #EdgeR option
     #group <- expression[[2]][1]
     expression<-edgeR::getCounts(expression)
     samplenames<-colnames(expression)
@@ -116,7 +112,9 @@ plot_ExploratoryPlots<-function(expression,group,colors=NULL,shape=NULL,
                          LegendName_Shape = LegendName_Shape,LegendName = LegendName,
                          MahalanobisEllips = MahalanobisEllips,...)
            #MDS
-           p_MDS<-plot_MDS(expression=expression,group=group)
+           p_MDS<-plot_MDS(expression=expression,group=group,point.size=point.size,
+                           LegendName_Color = LegendName_Color,
+                           LegendName_Shape = LegendName_Shape)
            
            #Distance
            pList<-plot_SampleDistance(expression=expression,...)
@@ -134,15 +132,19 @@ plot_ExploratoryPlots<-function(expression,group,colors=NULL,shape=NULL,
                          group=group,shape=shape,samplenames=samplenames,
                          title = title,colors=colors,ggrepelLab = ggrepelLab,
                          size_gglab = size_gglab,size_title = size_title,
-                         point.size = point.size,LegendName_Color = LegendName_Color,
-                         LegendName_Shape = LegendName_Shape,LegendName = LegendName,
+                         point.size = point.size,
+                         LegendName_Color = LegendName_Color,
+                         LegendName_Shape = LegendName_Shape,
+                         LegendName = LegendName,
                          MahalanobisEllips = MahalanobisEllips,...)
            plot(p)
            ggsave(file="PCA.svg", plot=p, width=10, height=8)
            ggsave(file="PCA.pdf", plot=p, width=10, height=8)
          },
          MDS={
-           p<-plot_MDS(expression=expression,group=group)
+           p<-plot_MDS(expression=expression,group=group,point.size=point.size,
+                       LegendName_Color = LegendName_Color,
+                       LegendName_Shape = LegendName_Shape)
            ggsave(file="MDS.svg", plot=p, width=10, height=8)
            ggsave(file="MDS.pdf", plot=p, width=10, height=8)
            plot(p)

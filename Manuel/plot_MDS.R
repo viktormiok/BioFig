@@ -1,4 +1,6 @@
-plot_MDS<-function(expression,group,...){
+plot_MDS<-function(expression,group,point.size,
+                   LegendName_Color="group",
+                   LegendName_Shape="shape",...){
  
   ## calculate distance for the sample
   data <- expression %>%
@@ -12,20 +14,10 @@ plot_MDS<-function(expression,group,...){
   
   ## plot in ggplot2
   plotmds <- ggplot(mds, aes(X1, X2,color=group)) +
-    geom_point(size = 3) +
-    theme_minimal() +
-    theme(axis.title=element_text(size = 12,face="bold", colour = "black"),
-          axis.text = element_text(size = 12),
-          axis.ticks = element_line(colour='black'),
-          plot.title = element_text(hjust = 0.5,size=12,face="bold"),
-          legend.position = "bottom",
-          legend.title = element_text(color = "Black", size = 12, face = "bold"),
-          legend.text=element_text(color = "Black", size = 12, face = "bold"),
-          panel.background = element_blank(),
-          panel.grid.major =  element_line(colour = "grey90", size = 0.2),
-          panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
-          panel.border = element_rect(color='black',fill=NA)) +
+    geom_point(size = point.size) +
+    ggTheme(1) +
     labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
+    labs(shape=LegendName_Shape, col=LegendName_Color)+
     ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)))
   return(plotmds)
     
