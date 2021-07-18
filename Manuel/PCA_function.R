@@ -199,7 +199,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     ## calculate distance(Dissimilarity Measure )
     sampleDis <- pheatmap::pheatmap(expression %>%
                                       t() %>%
-                                      dist() %>%
+                                    dist() %>%
                                     as.matrix(),
                                     col = rev(RColorBrewer::brewer.pal(n = 8, name = "RdBu")),
                                     main = "Sample dissmilarity",
