@@ -124,7 +124,14 @@ plot_ExploratoryPlots<-function(expression,group,colors=NULL,shape=NULL,
            p_heatmap<-plot_ExpressionHeatmap(expTable=expression,sampleDGroup=group)
            grob_expression = grid.grabExpr(draw(p_heatmap)) 
            
+           # plt_grid<-cowplot::plot_grid(p_PCA,p_MDS,p_Similarity,grob_expression)
+           # file1 <- tempfile("ExploratoryPlots", fileext = ".pdf")
+           # p<-cowplot::plot_grid(p_PCA,p_MDS,p_Similarity,grob_expression)
+           p<-cowplot::plot_grid(p_PCA,p_MDS,p_Similarity,grob_expression)
+           cowplot::save_plot("ExploratoryPlots.svg", p, base_height = 15, base_aspect_ratio = 1.4)
+           cowplot::save_plot("ExploratoryPlots.pdf", p, base_height = 15, base_aspect_ratio = 1.4)
            cowplot::plot_grid(p_PCA,p_MDS,p_Similarity,grob_expression)
+           
            
          },
          PCA={
