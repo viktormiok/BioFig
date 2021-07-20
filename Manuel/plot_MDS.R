@@ -18,7 +18,7 @@ plot_MDS<-function(expression,group,point.size,
     ggTheme(1) +
     labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
     labs(shape=LegendName_Shape, col=LegendName_Color)+
-    ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)))
+    ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)),max.overlaps = Inf)
   return(plotmds)
     
  

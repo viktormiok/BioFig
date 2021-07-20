@@ -8,7 +8,7 @@
 #' @param FontSTitle Font size for the title
 #' @param setseed Set seed to obtain the same colors
 #' @import ComplexHeatmap
-plot_ExpressionHeatmap<-function(expTable,Title="Heatmap",sampleDGroup,clColumns=FALSE,FontSRow=10,FontSColumn=10,FontSTitle=16,setseed=NULL,...){
+plot_ExpressionHeatmap<-function(expTable,Title="Heatmap",sampleDGroup,clColumns=FALSE,FontSRow=10,FontSColumn=10,FontSTitle=12,setseed=NULL,...){
   #Scale data using columns...
   z <- t(scale(t(expTable)))
   z<-z[complete.cases(z), ] #Keep only those that do not have NA
