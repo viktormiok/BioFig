@@ -3,7 +3,7 @@ plot_2DPCA<-function(expression, scl,colors=NULL,shape=NULL,
                      ggrepelLab=TRUE,size_gglab=5,
                      size_title=1,point.size=4,
                      MahalanobisEllips=F,
-                     LegendName_Color="group",LegendName_Shape="shape",LegendName="group",...){
+                     LegendName_Color="group",LegendName_Shape="shape",...){
   df_pca<-prcomp(t(expression),scale=scl)
   df_out <- as.data.frame(df_pca$x)
   df_out$group<-group
@@ -15,10 +15,10 @@ plot_2DPCA<-function(expression, scl,colors=NULL,shape=NULL,
   
   if(is.null(shape)){
     p<-ggplot(df_out,aes(x=PC1,y=PC2,color=group))
-    if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName)}
+    if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName_Color)}
   }else{
     p<-ggplot(df_out,aes(x=PC1,y=PC2,color=group,shape=shape))
-    if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName)}
+    if(!is.null(colors)){p<-p+scale_color_manual(values=colors,name=LegendName_Color)}
   }
   
   
@@ -31,7 +31,8 @@ plot_2DPCA<-function(expression, scl,colors=NULL,shape=NULL,
   if(ggrepelLab){
     p<-p + geom_text_repel(aes(label=sample_name),show.legend = FALSE,
                            size=size_gglab,
-                           force = 2,max.overlaps = Inf)
+                           force = 2,
+                           max.overlaps = Inf)
   }
   
   if(MahalanobisEllips){
