@@ -328,3 +328,87 @@ plot_ExpressionHeatmap<-function(expTable,Title="Heatmap",sampleDGroup,clColumns
   
   return(ht1)
 }
+
+
+
+
+#
+plot_MDS<-function(expression,group,point.size,
+                   LegendName_Color="group",
+                   LegendName_Shape="shape",...){
+  
+  ## calculate distance for the sample
+  data <- expression %>%
+    t() %>%
+    dist() %>%
+    as.matrix()
+  
+  ## convert distance matrix to Classical multidimensional scaling(MDS)
+  mdsData <- data.frame(cmdscale(data))
+  mds <- cbind(mdsData, as.data.frame(data)) # combine with distance with mds
+  
+  ## plot in ggplot2
+  plotmds <- ggplot(mds, aes(X1, X2,color=group)) +
+    geom_point(size = point.size) +
+    ggTheme(1) +
+    labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
+    labs(shape=LegendName_Shape, col=LegendName_Color)+
+    ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)),max.overlaps = Inf)
+  return(plotmds)
+  
+  
+}
+
+
+
+#
+plot_SampleDistance<-function(expression,...){
+  ## calculate distance(Dissimilarity Measure )
+  sampleDis <- pheatmap::pheatmap(expression %>%
+                                    t() %>%
+                                    dist() %>%
+                                    as.matrix(),
+                                  col = rev(RColorBrewer::brewer.pal(n = 8, name = "RdBu")),
+                                  main = "Sample dissmilarity",
+                                  fontsize = 9.23,
+                                  fontsize_col = 12,
+                                  fontsize_row = 12)
+  
+  
+  ## calculate sample correlation(Similarity Measure )
+  sampleCor <- pheatmap::pheatmap(expression %>%
+                                    cor() %>%
+                                    as.matrix(),
+                                  col = rev(RColorBrewer::brewer.pal(n = 8, name = "RdBu")),
+                                  main = "Sample similarity",
+                                  fontsize = 9.23,
+                                  fontsize_col = 12,
+                                  fontsize_row = 12)
+  listplots<-list()
+  listplots[[1]]<-sampleDis
+  listplots[[2]]<-sampleCor
+  return(listplots)
+}
+
+
+#' @keywords Internal
+ggTheme<-function(theme=1,size_title=12){
+  if(theme==1){
+    ggTheme<-theme_minimal() +
+      theme(plot.title = element_text(size = size_title, face = "bold",hjust = 0.5),
+            legend.title = element_text(color = "Black", size = 12, face = "bold"),
+            legend.text=element_text(color = "Black", size = 12, face = "bold"),
+            legend.position = "bottom",
+            axis.title=element_text(size = 12,face="bold", colour = "black"),
+            axis.text = element_text(size = 12),
+            axis.ticks = element_line(colour='black'),
+            panel.background = element_blank(),
+            panel.grid.major =  element_line(colour = "grey90", size = 0.2),
+            panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
+            panel.border = element_rect(color='black',fill=NA))
+    return(ggTheme)
+  }
+}
+
+
+
