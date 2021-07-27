@@ -9,6 +9,7 @@
 #'@param LegendName_Color logical. If TRUE dots are resized based on the values of a selected input column
 #'@param LegendName_Shape Number or name of the column in the input table to use for the size of the plot dots
 #'@import tidyverse 
+#'@import ggrepel
 #'@example 
 
 plot_MDS <-function(expression,group,point.size,

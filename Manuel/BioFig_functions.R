@@ -330,9 +330,21 @@ plot_ExpressionHeatmap<-function(expTable,Title="Heatmap",sampleDGroup,clColumns
 }
 
 
-
-
-#
+# Function MDS
+#'@description This function create a multidimensional scaling (MDS) plot that visualizing the level of (dis)similarity between individual cases of a dataset.
+#'MDS is a distance-preserving algorithms defined by the pairwise distances of data points.
+#'MDS takes a matrix D where Dij represents the dissimilarity between points i and j and produces a mapping on a lower dimension, preserving the dissimilarities as closely as possible. 
+#'There are many different ways of calculating dissimilarity among samples, Euclidean distance the default here 
+#'@param expression Numerical matrix with samples as columns (e.g gene expression)
+#'@param group logical. If TRUE labels for the sample are shown 
+#'@param point.size Name of the input table
+#'@param LegendName_Color logical. If TRUE dots are resized based on the values of a selected input column
+#'@param LegendName_Shape Number or name of the column in the input table to use for the size of the plot dots
+#'@return It returns a heatmap of the expression of all features
+#'@examples
+#'@import tidyverse 
+#'@import ggrepel
+#'
 plot_MDS<-function(expression,group,point.size,
                    LegendName_Color="group",
                    LegendName_Shape="shape",...){
@@ -361,7 +373,15 @@ plot_MDS<-function(expression,group,point.size,
 
 
 
-#
+# Sample distance heatmap
+#'@description This function created to show sample (dis) similarity in a heatmap using distance or correlation methods. 
+#'@param expression Numerical matrix with samples as columns (e.g gene expression)
+#'@return It returns a heatmap of the expression of all features
+#'@import tidyverse 
+#'@import pheatmap 
+#'@import RColorBrewer
+#'@example 
+#'
 plot_SampleDistance<-function(expression,...){
   ## calculate distance(Dissimilarity Measure )
   sampleDis <- pheatmap::pheatmap(expression %>%
