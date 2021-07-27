@@ -8,14 +8,11 @@ plot_2DPCA<-function(expression = c("matrix", "data.frame", "DGEList", "DESeqDat
                      point.size=4,scl=T,ntop=NULL,transform=NULL,MahalanobisEllips=F){
   
   #Add option to use only the top n genes that explain most of the variance
-
-  
   #Add option transform data (could be packed in another function)
   if(!is.null(transform) && transform=="vst"){
     expression<-vst(expression,fitType = "local")
     scl<-F
   }
-  
   #If the class of the object is dds
   ## edger approach
   if(class(expression)=="DESeqDataSet"){
@@ -23,19 +20,17 @@ plot_2DPCA<-function(expression = c("matrix", "data.frame", "DGEList", "DESeqDat
     samplenames<-colData(expression)[,samplenames]
     expression<-assay(expression)
   }
-  
   #If the class of the object is DGEList
   if(class(expression)=="DGEList"){
     edgR_list_object<- edgeR::plotMDS.DGEList(expression)
-    
     ## Then extract MDS matrix from edgR_list_object 
     ## Save the extracted MDS matrix as ed_list
     ed_list = as.data.frame(edgR_list_object$cmdscale.out) %>% dplyr::rename(DM1 = V1, DM2 = V2)
     
     ## Then pass the the data to ggplot2 to get the plot 
-    pplot <- ggplot2::ggplot(ed_list, ggplot2::aes(x=DM1,y=DM2))+
-      ggplot2::geom_point(size=3) + 
-      ggplot2::theme(axis.title=element_text(size = 12,face="bold", colour = "black"),
+    pplot <- ggplot(ed_list, aes(x=DM1,y=DM2))+
+    geom_point(size=3) + 
+    theme(axis.title=element_text(size = 12,face="bold", colour = "black"),
                      axis.text = element_text(size = 12),
                      axis.ticks = element_line(colour='black'),
                      plot.title = element_text(hjust = 0.5,size=12,face="bold"),
@@ -46,24 +41,12 @@ plot_2DPCA<-function(expression = c("matrix", "data.frame", "DGEList", "DESeqDat
                      panel.grid.major =  element_line(colour = "grey90", size = 0.2),
                      panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
                      panel.border = element_rect(color='black',fill=NA)) +
-      ggplot2::guides(colour=guide_legend(title="Group")) +
-      ggplot2::scale_fill_manual(values =  c("darkorange","darkmagenta"))+
-      ggplot2::labs(x = "Leading LogFC dim 1",
-                    y = "Leading LogFC dim 2", title = "MDS plot") +
+     labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
       ggrepel::geom_text_repel(data = ed_list,aes(label = rownames(ed_list)))
     return(pplot)
-    
-    ## if same one want to plot PCA from edgeR object
-    ## Then, extract the grouping information and the count data as follows 
      } 
-  else {
-     group <- expression$samples$group %>% as.data.frame()   
-     names(group) = "group"
-     expression = expression$counts
-        } 
-  
+     
   ## Then, it follows the code below for normalization and visualization.
-  
   df_pca<-prcomp(t(expression),scale=scl)
   df_out <- as.data.frame(df_pca$x)
   df_out$group<-group
@@ -110,6 +93,9 @@ plot_2DPCA<-function(expression = c("matrix", "data.frame", "DGEList", "DESeqDat
 library(dplyr)
 library(ggplot2)
 expression <- read.csv("cts.csv", row.names = 1)
+expression <- expression[apply(expression, 1, function(row) all(row !=0)), ]
+expression <- log2(expression)
+
 Sampledata <- read.csv("Sample.csv", row.names = 1) %>% dplyr::select(-2)
 expression <- edgeR::DGEList(counts = expression, group = t(Sampledata))
 
@@ -117,6 +103,40 @@ debug(plot_2DPCA)
 plot_2DPCA(expression)
 
 
+# calculate sample distances
+library(tidyverse)
+plotmds <- function(data){
+  
+  ## calculate distance for the sample
+  data <- expression %>%
+    t() %>%
+    dist() %>%
+    as.matrix()
+  
+  ## convert distance matrix to Classical multidimensional scaling(MDS)
+  mdsData <- data.frame(cmdscale(data))
+  mds <- cbind(mdsData, as.data.frame(data)) # combine with distance with mds
+  
+  ## plot in ggplot2
+  ggplot(mds, aes(X1, X2)) +
+    geom_point(size = 3) +
+    theme_minimal() +
+    theme(axis.title=element_text(size = 12,face="bold", colour = "black"),
+          axis.text = element_text(size = 12),
+          axis.ticks = element_line(colour='black'),
+          plot.title = element_text(hjust = 0.5,size=12,face="bold"),
+          legend.position = "bottom",
+          legend.title = element_text(color = "Black", size = 12, face = "bold"),
+          legend.text=element_text(color = "Black", size = 12, face = "bold"),
+          panel.background = element_blank(),
+          panel.grid.major =  element_line(colour = "grey90", size = 0.2),
+          panel.grid.minor =  element_line(colour = "grey98", size = 0.5),
+          panel.border = element_rect(color='black',fill=NA)) +
+    labs(x = "Leading LogFC dim 1", y = "Leading LogFC dim 2", title = "MDS plot") +
+    ggrepel::geom_text_repel(data = mds,aes(label = rownames(mds)))
+  
+}
+  
 
 
 

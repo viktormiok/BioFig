@@ -6,7 +6,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
                      LegendName_Shape="shape",LegendName="group",
                      ggrepelLab=TRUE,size_gglab=5,size_title=1,
                      point.size=4,scl=T,ntop=NULL,transform=NULL,
-                     MahalanobisEllips=F, plotype = c("PCA", "MDS", "sample/geneDistance")){
+                     MahalanobisEllips=F, plottype = c("PCA", "MDS", "sample/geneDistance")){
   
   #Functions used
   matchLs<-function(L1,L2){
@@ -21,7 +21,7 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
   ParaList<-as.list(match.call())
   
   #Check parameters that should be characters
-  ParamChNames<-  c("group","colors","samplenames","title","LegendName_Color","LegendName_Shape","LegendName","transform", "plotype")
+  ParamChNames<-  c("group","colors","samplenames","title","LegendName_Color","LegendName_Shape","LegendName","transform", "plottype")
   ChParaList<-ParaList[matchLs(ParamChNames,names(ParaList))]   #Obtain the parameter values given by the user
   ChNameList <-ParamChNames[matchLs(names(ParaList),ParamChNames)] #and names 
   for(i in 1:length(ChParaList)){#Loop parameters to make sure they are of class character
@@ -73,16 +73,16 @@ plot_2DPCA<-function(expression,group,colors=NULL,shape=NULL,
     }
   }
   
-  if (!is(scale, "logical")) {
-    stop("Input (scale) is of wrong class.")
-  } 
-  if (!is(MahalanobisEllips, "logical")) {
-    stop("Input (MahalanobisEllips) is of wrong class.")
-  } 
+  # if (!is(scale, "logical")) {
+  #   stop("Input (scale) is of wrong class.")
+  # } 
+  # if (!is(MahalanobisEllips, "logical")) {
+  #   stop("Input (MahalanobisEllips) is of wrong class.")
+  # } 
   
-  if (!is(plottype, "character")) {
-    stop("Input (plottype) is of wrong class.")
-  }
+  # if (!is(plottype, "character")) {
+  #   stop("Input (plottype) is of wrong class.")
+  # }
   
   #Deseq2 option
   if(class(expression)=="DESeqDataSet"){
