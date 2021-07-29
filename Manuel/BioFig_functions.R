@@ -1,4 +1,6 @@
 #' Plot exploratory plots
+#' @description This function is thought as a help to explore biological data. It can create four exploratory plots. PCA and MDS plots on the first row and Expression and Sample Distance heatmaps on the second row.
+#' Individual plots can also be obtained
 #' @param expression The expression table to use
 #' @param group Factor specifying the groups for the samples or the name of the column containing the factor variable if the input is a deseq2 object
 #' @param samplenames Vector specifying the names of the samples or the name of the column containing the sample names if the input is a deseq2 object
@@ -198,6 +200,7 @@ plot_ExploratoryPlots<-function(expression,group,samplenames,
 
 
 #' Plot 2D PCA
+#' @description This function creates a Principal Component Analysis (PCA) plot
 #' @param expression The expression table to use to create the PCA
 #' @param group Factor specifying the groups for the samples
 #' @param samplenames Vector specifying the names of the samples
@@ -263,6 +266,7 @@ plot_2DPCA<-function(expression, group,samplenames,
 
 
 #' Expression Heatmap
+#' @description This function creates an expression heatmap of all samples
 #' @param expTable The expression table to use to create the heatmap
 #' @param Title Title of the plot
 #' @param sampleDGroup A data frame specifying groups/factors for every sample
@@ -273,7 +277,6 @@ plot_2DPCA<-function(expression, group,samplenames,
 #' @param setseed Set seed to obtain the same colors
 #' @return It returns a heatmap of the expression of all features
 #' @import ComplexHeatmap
-#' @export
 plot_ExpressionHeatmap<-function(expTable,Title="Heatmap",sampleDGroup,clColumns=FALSE,FontSRow=10,FontSColumn=10,FontSTitle=16,setseed=NULL,...){
   #Scale data using columns...
   z <- t(scale(t(expTable)))
@@ -334,14 +337,13 @@ plot_ExpressionHeatmap<-function(expTable,Title="Heatmap",sampleDGroup,clColumns
 #'@description This function create a multidimensional scaling (MDS) plot that visualizing the level of (dis)similarity between individual cases of a dataset.
 #'MDS is a distance-preserving algorithms defined by the pairwise distances of data points.
 #'MDS takes a matrix D where Dij represents the dissimilarity between points i and j and produces a mapping on a lower dimension, preserving the dissimilarities as closely as possible. 
-#'There are many different ways of calculating dissimilarity among samples, Euclidean distance the default here 
+#'There are many different ways of calculating dissimilarity among samples, Euclidean distance is used as default 
 #'@param expression Numerical matrix with samples as columns (e.g gene expression)
-#'@param group logical. If TRUE labels for the sample are shown 
-#'@param point.size Name of the input table
-#'@param LegendName_Color logical. If TRUE dots are resized based on the values of a selected input column
-#'@param LegendName_Shape Number or name of the column in the input table to use for the size of the plot dots
-#'@return It returns a heatmap of the expression of all features
-#'@examples
+#'@param group Factor specifying the groups for the samples
+#'@param point.size Size of the dots for the plot
+#'@param LegendName_Color Title for the color legend
+#'@param LegendName_Shape Title for the shape legend
+#'@return It returns a MDS plot
 #'@import tidyverse 
 #'@import ggrepel
 #'
@@ -376,12 +378,11 @@ plot_MDS<-function(expression,group,point.size,
 # Sample distance heatmap
 #'@description This function created to show sample (dis) similarity in a heatmap using distance or correlation methods. 
 #'@param expression Numerical matrix with samples as columns (e.g gene expression)
-#'@return It returns a heatmap of the expression of all features
+#'@return It returns a heatmap depicitng similarity or disimilarity of the samples
 #'@import tidyverse 
 #'@import pheatmap 
 #'@import RColorBrewer
 #'@example 
-#'
 plot_SampleDistance<-function(expression,...){
   ## calculate distance(Dissimilarity Measure )
   sampleDis <- pheatmap::pheatmap(expression %>%
