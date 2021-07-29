@@ -14,7 +14,7 @@
 #' @param point.size Size of the dots for the PCA and MDS plots
 #' @param scale logical. If explicitly set to TRUE, the data is scaled for the PCA plot even if a transformation was applied 
 #' @param ntop Use n features that explain most of the variance
-#' @param MahalanobisEllips
+#' @param MahalanobisEllips logical. If TRUE mahalanobis ellipses are included in the PCA plot
 #' @return This function returns one or four plots for data exploration. The available plots are Principal Component Analysis (PCA), Multi Dimensional Scaling (MDS), Heatmap of sample distances, and a Heatmap of the expression of all features.
 #' @examples
 #' @import ComplexHeatmap
