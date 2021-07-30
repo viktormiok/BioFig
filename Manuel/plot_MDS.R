@@ -1,8 +1,5 @@
-# Function MDS
-#'@description This function create a multidimensional scaling (MDS) plot that visualizing the level of (dis)similarity between individual cases of a dataset.
-#'MDS is a distance-preserving algorithms defined by the pairwise distances of data points.
-#'MDS takes a matrix D where Dij represents the dissimilarity between points i and j and produces a mapping on a lower dimension, preserving the dissimilarities as closely as possible. 
-#'There are many different ways of calculating dissimilarity among samples, Euclidean distance the default here 
+# Multidimensional Scaling
+#'@description This function create a multidimensional scaling (MDS) plot that visualizing the level of dissimilarity between variables using distance-preserving algorithms.
 #'@param expression Numerical matrix with samples as columns (e.g gene expression)
 #'@param group logical. If TRUE labels for the sample are shown 
 #'@param point.size Name of the input table
