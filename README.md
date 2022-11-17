@@ -1,5 +1,4 @@
-# BioFig
-
+<img src="https://github.com/viktormiok/viktormiok.me/blob/main/software/BioFig.png" align="right" height="200" width="200"># BioFig
 The R-package `BioFig` performs visualisatio and quality contro of omics data. 
 
 # Installation
