@@ -1,4 +1,7 @@
 <img src="https://github.com/viktormiok/viktormiok.me/blob/main/software/BioFig.png" align="right" height="200" width="200"># BioFig
+
+![](https://img.shields.io/badge/languages-R-orange.svg) ![version](https://img.shields.io/badge/GiHub_version-1.1.0-519dd9) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/viktormiok/BioFig) ![GitHub issues](https://img.shields.io/github/issues/viktormiok/BioFig)
+
 The R-package `BioFig` performs visualisatio and quality contro of omics data. 
 
 # Installation
