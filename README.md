@@ -20,7 +20,7 @@
 - [References](#references)
 
 ## Overview
-The R-package `BioFig` performs visualisatio and quality contro of omics data. 
+The R-package `BioFig` performs visualisation and quality control of omics data. 
 
 # Installation
 
